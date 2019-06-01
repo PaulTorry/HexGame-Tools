@@ -6,7 +6,8 @@
 
 </head>
 <body>
-
+  <button id="refresh" name="hello">refresh</button><input id="itts" type="text" value="1">
+  <br>
   <canvas id="test" width="800" height="800" style="border:1px solid #d3d3d3;"></canvas>
 
 </body>
@@ -14,12 +15,19 @@
   function json(a){return JSON.stringify(a)};
   var c = document.getElementById("test").getContext("2d");
 
+  document.getElementById("refresh").addEventListener("click", function(){
+  console.log(Number(document.getElementById("itts").value)*2)
+
+  });
+
+
+
   //console.log(draw(ctx,JSON.parse(json(raw(ctx)))));
 
   //   drawFromData(c,missileShip);
   //   drawFromData(c,gasGiant);
   drawFromData(c,pasteHere(getParseCTX()));
- console.log(json(pasteHere(getParseCTX())))
+  console.log(json(pasteHere(getParseCTX())))
   // let rand = Math.random
   // let x1 = rand()
   // let x2 = rand()

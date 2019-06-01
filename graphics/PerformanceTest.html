@@ -1,0 +1,81 @@
+<html>
+<head>
+  <title>Performance Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.2/math.js"></script>
+  <script>
+
+  function drawFromData(c, data, xx=100, yy=100, colourMap = x=>x, scale = 1, rotation = 0, alwaysDraw = false){
+
+    let add = (a, x, y) => a.map((v,i) => i%2 ? v*scale+y  : v*scale+x);
+    let gradient;
+    let x = xx;
+    let y = yy;
+
+    //c.save();
+    //c.shadowColor = "rgba(0, 0, 0, 0.35)";
+    //c.shadowOffsetX = 3.0; c.shadowOffsetY = 3.0;
+    //c.shadowBlur = 10.0;
+
+    data.forEach(([t, ...v]) => {
+      if(t === "sv") c.save();
+      else if(t === "sc") {scale *= v[0]}
+      else if(t === "of") {x = xx + v[0]*scale; y = yy + v[1]*scale;}
+      else if(t === "bp") c.beginPath();
+      else if(t === "mt") c.moveTo(...add(v,x,y));
+      else if(t === "lt") c.lineTo(...add(v,x,y));
+      else if(t === "lw") c.lineWidth = v[0];
+      else if(t === "cp") c.closePath();
+      else if(t === "fs"){
+        if (v && v[0] ){ c.fillStyle = colourMap(v[0]); }
+        else if (gradient) {c.fillStyle = gradient}
+      }
+      else if(t === "ss"){ if (v){ c.strokeStyle = colourMap(v[0]);}}
+      else if(t === "fl") c.fill();
+      else if(t === "ct") c.bezierCurveTo(...add(v,x,y));
+      else if(t === "re") c.restore();
+      else if(t === "st") c.stroke()
+      //else if(t === "tr") c.transform(...v)
+      else if(t === "xrg"){gradient = c.createRadialGradient(v[0]*scale+x,v[1]*scale+y,v[2]*scale,v[3]*scale+x,v[4]*scale+y,v[5]*scale)    }
+      else if(t === "xlg"){gradient = c.createLinearGradient(...add(v,x,y))
+      }
+      else if(t === "xcs"){gradient.addColorStop(v[0], colourMap(v[1])) }
+    })
+    c.shadowOffsetX = 0;  c.shadowOffsetY = 0;  c.shadowBlur = 0.0;
+    c.restore(); c.beginPath();c.closePath(); // Hack to stop drawing after clear
+
+    if (c.data) return c.data;
+  }
+
+  var data = [["of",-55,-50],
+  ["sv"],["sv"],["bp"],["mt",32.6,25.9],["lt",27.5,27.3],["lt",25.9,33.4],["lt",30.8,37.4],["lt",36.4,37.4],["lt",36.4,31.6], ["lt",32.6,25.9],["cp"],["fs","rgb(130, 6,  20)"],["fl"],["bp"],["mt",97.5,53.9], ["lt",93.2,58.4], ["lt",95.3,61.2], ["lt",98.9,62.9],["lt",104.1,59.8],["lt",101.8,55.1],["lt",97.5,53.9],["cp"],["fl"],["bp"],["mt",91.5,74.4], ["lt",87,77.8],["lt",88.4,80.8],["lt",91.5,80.8],["lt",96.1,77.8],["lt",91.5,74.4],["cp"],["fl"],["bp"],["mt",57.1,94.5],["lt",55.4,100.1],["lt",57.1,103.9],["lt",62.4,103.9],["lt",65.5,99.2],["lt",62.4,96.2],["lt",57.1,94.5],["cp"],["fl"],["bp"],["mt",53.8,75.8],["lt",55.4,80.8],["lt",57.1,82.8],["lt",62.4,83.8],["lt",67.1,82.8],["lt",67.1,77.8],["lt",62.4,77.6], ["lt",57.1,74.4],["lt",53.8,75.8],["cp"],["fl"],["bp"],["mt",93.2,11.8],["lt",96.1,9.9],["lt",98.9,11.8], ["lt",98.7,18.1],["lt",93.2,18.1],["lt",91.6,15.9],["lt",93.2,11.8],["cp"],["fl"],["bp"],["mt",71.9,28.3],["lt",75.4,28.3],["lt",75.4,30.2],["lt",73.6,34.8],["lt",70.1,33.1],["lt",67.6,30.2],["lt",71.9,28.3],["cp"],["fl"],["bp"],["mt",4.8,62.9],["lt",8.1,62.9],["lt",8.1,65.4],["lt",3.5,67.7],["ct",3.5,67.7,-1,65,0.2,65.4], ["ct",1.5,65.8,1.5,62.9,1.5,62.9],["lt",4.8,62.9],["cp"],["fl"],["re"],["sv"],["bp"],["mt",31.1,41.3], ["lt",28.2,46.4],["lt",29.7,49.3],["lt",32.6,49.3],["lt",36.4,47.8],["lt",36.4,44],["lt",33.9,41.3],["lt",31.1,41.3],["cp"],["fs","rgb(215, 35, 53)"],["fl"],["bp"],["mt",98.7,69.5],["lt",95.3,71.9],["lt",95.3,74.4],["lt",96.1,77.8],["lt",98.9,77.8],["lt",101.5,74.4],["lt",100.2,71.9],["lt",98.7,69.5],["cp"],["fl"],["bp"],["mt",45.2,73.6],["lt",42,74.4],["lt",42,79.1],["lt",43.6,80.8],["lt",48.7,80.8],["lt",50.6,77.6],["lt",45.2,73.6],["cp"],["fl"],["bp"],["mt",71.5,0],["lt",67.6,1.6],["lt",67.6,4.8],["lt",69.6,6],["lt",73,6],["lt",74.2,3],["lt",71.5,0],["cp"],["fl"],["bp"],["mt",24.9,94.5],["lt",22.7,98],["lt",24.9,98],["lt",28.2,96.4],["lt",27.2,94.5],["lt",24.9,94.5],["cp"],["fl"],["re"],["re"]]
+
+
+  </script>
+
+</head>
+<body>
+  <button id="refresh" name="hello">refresh</button>
+  <input id="itts" type="text" value="1">
+  <p id="time"></p>
+  <br>
+
+  <canvas id="test" width="800" height="800" style="border:1px solid #d3d3d3;"></canvas>
+
+</body>
+<<script type="text/javascript">
+  var c = document.getElementById("test").getContext("2d");
+
+
+  document.getElementById("refresh").addEventListener("click", function(){
+    let startTime = new Date();
+    itts = Number(document.getElementById("itts").value);
+    console.log("itterations", itts);
+    for(let i = 0; i<itts; i++) {drawFromData(c,data);}
+    document.getElementById("time").innerHTML = "Time:" + (new Date() - startTime)
+  });
+
+  drawFromData(c,data);
+
+
+  c.translate(0,0)
+</script>
