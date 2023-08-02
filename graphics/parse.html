@@ -11,7 +11,7 @@
   <canvas id="test" width="800" height="800" style="border:1px solid #d3d3d3;"></canvas>
 
 </body>
-<<script type="text/javascript">
+<script type="text/javascript">
   function json(a){return JSON.stringify(a)};
   var c = document.getElementById("test").getContext("2d");
 
@@ -26,7 +26,7 @@
 
   //   drawFromData(c,missileShip);
   //   drawFromData(c,gasGiant);
-  drawFromData(c,pasteHere(getParseCTX()));
+  drawFromCode(c,pasteHere(getParseCTX()));
   console.log(json(pasteHere(getParseCTX())))
   // let rand = Math.random
   // let x1 = rand()
